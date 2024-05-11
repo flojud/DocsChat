@@ -1,0 +1,39 @@
+name: Build distribution 📦
+
+on:
+  workflow_call:
+    inputs:
+      bump:
+        required: true
+        type: string
+env:
+  python-version: 3.11
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.python-version }}
+      - name: Pypa/build a binary wheel and source tarball
+        run: |
+          python3 -m pip install build --user
+          python3 -m pip install --upgrade bumpversion
+          git config --global user.email "dev.flojud@gmail.com"
+          git config --global user.name "GitHub Action"
+          bumpversion ${{ inputs.bump }}
+          python3 -m build
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

@@ -1,0 +1,40 @@
+name: Publish 🐍 📦 to TestPyPI
+
+on:
+  push:
+    branches:
+      - development
+
+env:
+  package-name: Chat_with_my_docs
+
+jobs:
+  check:
+    uses: ./.github/workflows/check.yaml
+
+  build:
+    uses: ./.github/workflows/build.yaml
+    with:
+      bump: minor
+    needs: check
+    secrets: inherit
+
+  publish:
+    name: Publish TestPyPI 🐍 📦
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/${{env.package-name}}
+    permissions:
+      id-token: write # IMPORTANT: mandatory for trusted publishing
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v3
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish 📦
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/

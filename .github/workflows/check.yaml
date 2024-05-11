@@ -1,0 +1,16 @@
+name: Check commit is version bump
+
+on:
+  workflow_call: {}
+
+jobs:
+  pre-check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if [[ "${{ github.event.head_commit.message }}" == *"Bump version"* ]]; then
+            echo "Version is bumped. Proceeding with the build."
+            exit 78
+          else
+            echo "Version is not bumped. Exiting the build."
+          fi
