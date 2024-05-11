@@ -1,5 +1,8 @@
 from setuptools import find_packages, setup
 
+with open("requirements.txt") as f:
+    requirements = f.read().splitlines()
+
 setup(
     name="Chat_with_my_docs",
     version="0.9.0",
@@ -12,7 +15,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/flojud/chat-with-my-docs",
-    install_requires=[],
+    install_requires=requirements,
     project_urls={
         "Bug Tracker": "https://github.com/flojud/chat-with-my-docs/issues",
     },
