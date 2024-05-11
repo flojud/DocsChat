@@ -1,20 +1,20 @@
 import fnmatch
 import os
+
 import langchain
 import streamlit as st
+from langchain.chains import ConversationalRetrievalChain, RetrievalQA
+from langchain.prompts import PromptTemplate
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import OllamaEmbeddings
+from langchain_community.llms import Ollama
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_text_splitters import (
     CharacterTextSplitter,
     RecursiveCharacterTextSplitter,
 )
-from langchain.chains import RetrievalQA, ConversationalRetrievalChain
-from langchain_community.llms import Ollama
-from langchain.prompts import PromptTemplate
 from stqdm import stqdm
-
 
 chain, embeddings, llm, db = None, None, None, None
 
@@ -421,11 +421,6 @@ def start_chatbot():
                 with st.spinner(text="In progress"):
                     delete_db()
                     st.success("Done")
-
-
-def run():
-    setup()
-    start_chatbot()
 
 
 if __name__ == "__main__":

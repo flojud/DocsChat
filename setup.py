@@ -18,7 +18,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "chat = app:main",
+            "chat_with_my_docs = app:main",
         ],
     },
     python_requires=">=3.10",
