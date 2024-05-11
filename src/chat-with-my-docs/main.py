@@ -423,6 +423,11 @@ def start_chatbot():
                     st.success("Done")
 
 
+def run():
+    setup()
+    start_chatbot()
+
+
 if __name__ == "__main__":
     setup()
     start_chatbot()

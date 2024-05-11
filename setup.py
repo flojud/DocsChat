@@ -18,9 +18,9 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "chat-with-my-docs = chat-with-my-docs.main:run",
+            "chat = main:run",
         ],
     },
-    python_requires=">=3.11",
+    python_requires=">=3.10",
     license="MIT",
 )
