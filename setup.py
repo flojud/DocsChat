@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="Chat_with_my_docs",
-    version="0.8.0",
+    version="0.9.0",
     packages=find_packages("src"),
     package_dir={"": "src"},
     author="flojud",
