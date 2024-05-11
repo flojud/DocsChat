@@ -12,13 +12,13 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/flojud/chat-with-my-docs",
-    install_requires=[],
+    install_requires=["python", "streamlit"],
     project_urls={
         "Bug Tracker": "https://github.com/flojud/chat-with-my-docs/issues",
     },
     entry_points={
         "console_scripts": [
-            "chat_with_my_docs = app:main",
+            "chat_with_my_docs = __main__:app",
         ],
     },
     python_requires=">=3.10",
