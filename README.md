@@ -42,7 +42,7 @@ docchat
 
 ## Configure
 
-![DocChat](assets/docchat.png)
+![DocChat](https://raw.githubusercontent.com/flojud/DocChat/development/assets/docchat.png)
 
 ### PDF sources
 
@@ -51,20 +51,20 @@ docchat
 
 ### Vector store
 
-![Vector store](assets/vectorestore.png)
+![Vector store](https://raw.githubusercontent.com/flojud/DocChat/development/assets/vectorestore.png)
 
 - Chroma DB in memory is used as a vector store, which stores the data in a Persit directory, so the data in the DB is also available after the restart.
 - The Retriever search type has and the various parameters influence the search of documents in the Vectore Store.
 
 ### Ollama
 
-![Ollama](assets/ollama.png)
+![Ollama](https://raw.githubusercontent.com/flojud/DocChat/development/assets/ollama.png)
 
 - Configure the ollama server connection and the model with which the server was started.
 - the LLM parameters influence the embedding of the PDFs but also the answering of questions in the RAG pipeline.
 
 ## Actions
 
-![Actions](assets/actions.png)
+![Actions](https://raw.githubusercontent.com/flojud/DocChat/development/assets/actions.png)
 
 There are two functions available, the sync of PDF documents into the Vectore Store. This can take some time depending on the system resources, embedding and splitter. The Delete DB function deletes the Chroma Collection.
