@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  package-name: Chat_with_my_docs
+  package-name: DocChat
 
 jobs:
   check:
