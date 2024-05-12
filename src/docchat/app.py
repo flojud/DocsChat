@@ -223,21 +223,30 @@ def run_chain(question: str, chat_history: list[str]) -> list[any]:
 def start_chatbot():
     global config
 
-    st.title("Chat with my docs 🤖")
+    st.title("DocsChat 📚🗣️")
 
     # Initialize chat history
     if "messages" not in st.session_state:
         st.session_state["messages"] = []
         st.markdown(
             """
-            This app requires the Ollama server to be running. 
+            Get ready to explore, learn, and discover your data. Let's chat! 🚀
+             
+            This app requires the Ollama server to be running.\
             You can install and run it with the following commands:
             ```bash
             brew install ollama
+            ```
+            
+            Pull the model you want to use:
+            ```bash
             ollama pull llama3
+            ```
+
+            Run the ollama server:
+            ```bash
             ollama run llama3
             ```
-            Let's chat! 🚀
             """
         )
 
