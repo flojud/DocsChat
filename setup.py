@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="DocChat",
-    version="0.17.0",
+    version="0.18.0",
     package_dir={"": "src"},
     packages=["docchat"],
     author="flojud",
