@@ -20,6 +20,7 @@ setup(
         "langchain-experimental==0.0.58",
         "stqdm",
         "watchdog",
+        "pypdf",
     ],
     project_urls={
         "Bug Tracker": "https://github.com/flojud/chat-with-my-docs/issues",
