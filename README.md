@@ -1,4 +1,4 @@
-# DocsChat 📚🗣️
+# DocChat 📚🗣️
 
 `docchat` is a command-line interface that let's you start a local streamlit server and interact with your documents.
 
