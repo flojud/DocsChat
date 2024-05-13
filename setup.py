@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="DocsChat",
-    version="3.2.0",
+    version="4.0.0",
     package_dir={"": "src"},
     packages=["docschat"],
     author="flojud",
