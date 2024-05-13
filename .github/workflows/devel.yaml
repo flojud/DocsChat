@@ -6,7 +6,7 @@ on:
       - development
 
 env:
-  package-name: DocChat
+  package-name: DocsChat
 
 jobs:
   check:

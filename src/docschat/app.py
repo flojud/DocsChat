@@ -223,7 +223,7 @@ def run_chain(question: str, chat_history: list[str]) -> list[any]:
 def start_chatbot():
     global config
 
-    st.title("DocChat 📚🗣️")
+    st.title("DocsChat 📚🗣️")
 
     # Initialize chat history
     if "messages" not in st.session_state:
