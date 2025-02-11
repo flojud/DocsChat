@@ -7,8 +7,8 @@ from langchain.chains import ConversationalRetrievalChain, RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.embeddings import OllamaEmbeddings
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaEmbeddings
+from langchain_ollama import OllamaLLM
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_text_splitters import (
     CharacterTextSplitter,
@@ -16,28 +16,32 @@ from langchain_text_splitters import (
 )
 from stqdm import stqdm
 
-chain, embeddings, llm, db = None, None, None, None
+chain, embeddings, llm, db, config = None, None, None, None, None
 
-config = {
-    "ollama": {
-        "url": "http://localhost:11434",
-        "model": "llama3",
-        "temperature": 0.8,
-        "tfs_z": 1.0,
-        "top_k": 40,
-        "top_p": 0.9,
-    },
-    "db": {
-        "source": "/Users/florjud/Downloads",
-        "persist_directory": "./vector_db",
-        "search_type": "mmr",
-        "top_k": 10,
-        "fetch_k": 10,
-        "lambda_mult": 0.5,
-        "score_threshold": 0.8,
-    },
-    "splitter": "None",
-}
+if "config" not in st.session_state:
+    st.session_state.config = {
+        "ollama": {
+            "url": "http://localhost:11434",
+            "model": "deepseek-r1",
+            "temperature": 0.8,
+            "tfs_z": 1.0,
+            "top_k": 40,
+            "top_p": 0.9,
+        },
+        "db": {
+            "source": "/tmp/files/",
+            "persist_directory": "/tmp/db/",
+            "search_type": "mmr",
+            "top_k": 10,
+            "fetch_k": 10,
+            "lambda_mult": 0.5,
+            "score_threshold": 0.8,
+        },
+        "splitter": "None",
+    }
+
+# Use session state config instead of the global variable
+config = st.session_state.config
 
 
 def setup() -> None:
@@ -48,9 +52,10 @@ def setup() -> None:
     :return: None
     """
 
-    global embeddings, db, llm
+    global embeddings, db, llm, config
+    config = st.session_state.config
 
-    llm = Ollama(
+    llm = OllamaLLM(
         base_url=config["ollama"]["url"],
         model=config["ollama"]["model"],
         temperature=config["ollama"]["temperature"],
@@ -122,13 +127,17 @@ def sync() -> None:
 
     :return: None
     """
+    global config
     pdfs = []
     splitter = get_splitter()
 
     # Find all PDFs in the source folder
     for root, dirs, files in os.walk(config["db"]["source"]):
         for file in files:
+            print(config)
+            print("here:" + file)
             if fnmatch.fnmatch(file, "*.pdf"):
+
                 pdfs.append(os.path.join(root, file))
 
     # Load and split documents
@@ -151,6 +160,7 @@ def get_seach_kwargs() -> dict:
     This function returns the search kwargs based on the configuration value in the global `config` variable.
     :return: dict - The search kwargs
     """
+    global config
 
     if config["db"]["search_type"] == "similarity_score_threshold":
         return {
@@ -199,7 +209,10 @@ def run_chain(question: str, chat_history: list[str]) -> list[any]:
     Standalone question:
     """
 
-    prompt = PromptTemplate(template=template, input_variables=["context", "question"])
+    global config
+
+    prompt = PromptTemplate(template=template, input_variables=[
+                            "context", "question"])
     condense_prompt = PromptTemplate(
         template=condense_prompt, input_variables=["question", "chat_history"]
     )
@@ -284,7 +297,7 @@ def start_chatbot():
 
             sync_folder_path = st.text_input(
                 "PDF source folder",
-                value="/Users/florjud/Downloads",
+                value=config["db"]["source"],
                 help="This is the folder where the app will look recursively for PDFs to embed.",
             )
 
@@ -304,7 +317,7 @@ def start_chatbot():
 
             persist_directory = st.text_input(
                 "Persist directory",
-                value="/Users/florjud/Downloads",
+                value=config["db"]["persist_directory"],
                 help="This is the folder where the app will store the vector store.",
             )
 
@@ -360,9 +373,10 @@ def start_chatbot():
                 help="The base url the model is hosted under. Usually it's http://localhost:11434",
             )
 
-            model = st.selectbox(
+            model_select = st.selectbox(
                 "🦙 Model",
-                ["llama3", "llama2", "gemma", "mistral", "codellama"],
+                ["deepseek-r1", "llama3", "llama2",
+                    "gemma", "mistral", "codellama"],
                 help="Pick the model you want to use. Futher models can be added by running `ollama pull <model_name>` in the terminal. Full list see here: https://ollama.com/library?sort=popular",
             )
 
@@ -399,22 +413,25 @@ def start_chatbot():
             )
 
             if st.form_submit_button("Save"):
-                config["ollama"]["url"] = url
-                config["ollama"]["model"] = model
-                config["ollama"]["temperature"] = temperature
-                config["ollama"]["tfs_z"] = tfs_z
-                config["ollama"]["top_k"] = top_k
-                config["ollama"]["top_p"] = top_p
+                st.session_state.config["ollama"]["url"] = url
+                st.session_state.config["ollama"]["model"] = model_select
+                st.session_state.config["ollama"]["temperature"] = temperature
+                st.session_state.config["ollama"]["tfs_z"] = tfs_z
+                st.session_state.config["ollama"]["top_k"] = top_k
+                st.session_state.config["ollama"]["top_p"] = top_p
 
-                config["db"]["source"] = sync_folder_path
-                config["db"]["persist_directory"] = persist_directory
-                config["db"]["search_type"] = search_type_retriever
-                config["db"]["top_k"] = top_k_retriever
-                config["db"]["fetch_k"] = fetch_k_retriever
-                config["db"]["lambda_mult"] = lambda_mult_retriever
-                config["db"]["score_threshold"] = score_threshold_retriever
-                config["splitter"] = splitter_to_use
+                st.session_state.config["db"]["source"] = sync_folder_path
+                st.session_state.config["db"]["persist_directory"] = persist_directory
+                st.session_state.config["db"]["search_type"] = search_type_retriever
+                st.session_state.config["db"]["top_k"] = top_k_retriever
+                st.session_state.config["db"]["fetch_k"] = fetch_k_retriever
+                st.session_state.config["db"]["lambda_mult"] = lambda_mult_retriever
+                st.session_state.config["db"]["score_threshold"] = score_threshold_retriever
+                st.session_state.config["splitter"] = splitter_to_use
+
+                # Re-run setup with updated config
                 setup()
+                st.success("Settings saved successfully!")
 
         st.title("Actions")
 
