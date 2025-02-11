@@ -1,4 +1,4 @@
-VENV_NAME = imap_venv
+VENV_NAME = venv
 PYTHON = $(VENV_NAME)/bin/python
 PIP = $(VENV_NAME)/bin/pip
 
@@ -16,7 +16,7 @@ install:
 	 . $(VENV_NAME)/bin/activate
 
 run:
-	streamlit run src/chat-with-my-docs/main.py
+	streamlit run src/docschat/app.py
 release:
 	bump2version minor
 	$(PYTHON) -m build
